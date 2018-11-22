@@ -16,6 +16,7 @@ class Cell:
     yPos = None
     value = None
     domain = None
+    cellsInArcs = None
 
 
     def __init__(self, xPos, yPos):
@@ -33,6 +34,7 @@ class Cell:
         self.xPos = xPos
         self.yPos = yPos
         self.domain = getValidValueList()
+        self.cellsInArcs = []
 
     def setValue(self, value):
         """
@@ -61,6 +63,13 @@ class Cell:
         """
         if self.value is None and len(self.domain) == 1 :
             self.value = self.domain[0]
+
+    def SetCellsInArcs(self, cells):
+        """
+        Sets the cellsInArcs variable to the given list.
+        :param cells: the list of cells that are in constraints alongside with this cell.
+        """
+        self.cellsInArcs = cells
 
     def __str__(self):
         """

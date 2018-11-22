@@ -5,7 +5,6 @@ def getValidValueList():
     """
     return [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-
 class InvalidPosition(Exception):
     """
     Exception to be called if the x or y position of the cell is invalid.
