@@ -1,4 +1,5 @@
 from cell import *
+from utility import *
 
 class Grid:
     """
@@ -7,6 +8,7 @@ class Grid:
     Attributes:
         cells: a list containing all the cells of the grid.
     """
+
     cells = []
 
     def __init__(self):
@@ -74,3 +76,30 @@ class Grid:
                 output.append(c)
 
         return output
+
+    def SetInitialValues(self, values):
+
+        for i in range(0,len(values)):
+            if values[i] in getValidValueList():
+                self.cells[i].SetValue(values[i])
+
+    def AutoFill(self):
+
+        while True:
+
+            fill = 0
+
+            for cell in self.cells:
+                if cell.AutoFill():
+                    fill += 1
+
+            if fill == 0:
+                break
+
+    def CountFilledCells(self):
+        count = 0
+        for cell in self.cells:
+            if cell.value is not None:
+                count += 1
+
+        return count
