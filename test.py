@@ -20,7 +20,7 @@ difficultSequence = "300090100" \
            "000600018" \
            "008700000"
 
-values = stringToIntList(easySequence)
+values = stringToIntList(difficultSequence)
 
 g = Grid()
 g.SetInitialValues(values)

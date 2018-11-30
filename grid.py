@@ -11,13 +11,15 @@ class Grid:
 
     cells = []
 
+    # STANDARD
+
     def __init__(self):
         """
         Initializes a 9x9 grid of empty cells.
         """
         for j in getValidValueList():
             for i in getValidValueList():
-                self.cells.append(Cell(i,j))
+                self.cells.append(Cell(i, j))
 
         for c in self.cells:
             c.cellsInArcs = self.ComputeCellsInArcs(c.xPos, c.yPos)
@@ -47,6 +49,8 @@ class Grid:
                     output += "-------------------------\n"
 
         return output
+
+    # INITIAL SETTING
 
     def ComputeCellsInArcs(self, xPos, yPos):
         """
@@ -78,12 +82,80 @@ class Grid:
         return output
 
     def SetInitialValues(self, values):
+        """
+        Sets the initial position of the grid to one given by the values array-
+        :param values: array of values for the grid, 0 if the cell is empty.
+        """
 
         for i in range(0,len(values)):
             if values[i] in getValidValueList():
                 self.cells[i].SetValue(values[i])
 
+    # UTILITY
+
+    def GridBackup(self):
+        """
+        Used to backup the grid. It creates a copy of this grid.
+        :return: A copy of the grid.
+        """
+
+        output = Grid()
+
+        for i in range(0, len(self.cells)):
+            output.cells[i].SetValue(self.cells[i].value)
+
+        return output
+
+    def CountFilledCells(self):
+        """
+        Counts the amount of cells filled in the grid.
+        :return: The number of cells filled with a value.
+        """
+
+        count = 0
+        for cell in self.cells:
+            if cell.value is not None:
+                count += 1
+
+        return count
+
+    def DeadEnd(self):
+        """
+        Returns true if there's a cell that doesn't admit any value, false otherwise.
+        :return: true if a cell has a empty domain, false otherwise.
+        """
+
+        output = False
+
+        for cell in self.cells:
+            if len(cell.domain) == 0:
+                output = True
+                break
+
+        return output
+
+    def MRV(self):
+        """
+        Minimum Remaining Values
+        Finds the cell with the smallest domain.
+        :return: the cell with the smallest domain.
+        """
+
+        cell = Cell(1, 1)
+
+        for c in self.cells:
+            if 1 < len(c.domain) < len(cell.domain):
+                cell = c
+
+        return cell
+
+
+    # SOLVE
+
     def AutoFill(self):
+        """
+        Used to auto-fill the grid based just on the arcs (immediate constraints).
+        """
 
         while True:
 
@@ -95,11 +167,3 @@ class Grid:
 
             if fill == 0:
                 break
-
-    def CountFilledCells(self):
-        count = 0
-        for cell in self.cells:
-            if cell.value is not None:
-                count += 1
-
-        return count

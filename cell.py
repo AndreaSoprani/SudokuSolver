@@ -1,5 +1,6 @@
 from utility import *
 
+
 class Cell:
     """
     A class representing a Sudoku cell.
@@ -84,4 +85,3 @@ class Cell:
         :param cells: the list of cells that are in constraints alongside with this cell.
         """
         self.cellsInArcs = cells
-
