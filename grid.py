@@ -1,5 +1,7 @@
 from cell import *
 from utility import *
+import copy
+
 
 class Grid:
     """
@@ -9,7 +11,7 @@ class Grid:
         cells: a list containing all the cells of the grid.
     """
 
-    cells = []
+    cells = None
 
     # STANDARD
 
@@ -17,6 +19,7 @@ class Grid:
         """
         Initializes a 9x9 grid of empty cells.
         """
+        self.cells = []
         for j in getValidValueList():
             for i in getValidValueList():
                 self.cells.append(Cell(i, j))
@@ -87,24 +90,11 @@ class Grid:
         :param values: array of values for the grid, 0 if the cell is empty.
         """
 
-        for i in range(0,len(values)):
+        for i in range(0, len(values)):
             if values[i] in getValidValueList():
                 self.cells[i].SetValue(values[i])
 
     # UTILITY
-
-    def GridBackup(self):
-        """
-        Used to backup the grid. It creates a copy of this grid.
-        :return: A copy of the grid.
-        """
-
-        output = Grid()
-
-        for i in range(0, len(self.cells)):
-            output.cells[i].SetValue(self.cells[i].value)
-
-        return output
 
     def CountFilledCells(self):
         """
@@ -112,12 +102,7 @@ class Grid:
         :return: The number of cells filled with a value.
         """
 
-        count = 0
-        for cell in self.cells:
-            if cell.value is not None:
-                count += 1
-
-        return count
+        return sum(c.value is not None for c in self.cells)
 
     def DeadEnd(self):
         """
@@ -125,14 +110,7 @@ class Grid:
         :return: true if a cell has a empty domain, false otherwise.
         """
 
-        output = False
-
-        for cell in self.cells:
-            if len(cell.domain) == 0:
-                output = True
-                break
-
-        return output
+        return any(len(c.domain) == 0 for c in self.cells)
 
     def MRV(self):
         """
@@ -141,7 +119,7 @@ class Grid:
         :return: the cell with the smallest domain.
         """
 
-        cell = Cell(1, 1)
+        cell = next(c for c in self.cells if c.value is None)
 
         for c in self.cells:
             if 1 < len(c.domain) < len(cell.domain):
@@ -149,16 +127,30 @@ class Grid:
 
         return cell
 
+    def Degree(self):
+        """
+        Finds the cell which is involved in the highest number of constraints on other empty cells.
+        :return: the selected cell.
+        """
+        cell = next(c for c in self.cells if c.value is None)
+
+        for c in self.cells:
+            if c.GetUnassignedVariablesConstraints() > cell.GetUnassignedVariablesConstraints()\
+                    and c.value is None:
+                cell = c
+
+        return cell
 
     # SOLVE
 
     def AutoFill(self):
         """
         Used to auto-fill the grid based just on the arcs (immediate constraints).
+        :return: the number of cells filled.
         """
+        totalfilled = 0
 
         while True:
-
             fill = 0
 
             for cell in self.cells:
@@ -167,3 +159,7 @@ class Grid:
 
             if fill == 0:
                 break
+
+            totalfilled += fill
+
+        return totalfilled

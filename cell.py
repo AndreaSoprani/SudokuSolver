@@ -26,9 +26,9 @@ class Cell:
         :param yPos: the y position of the cell (from 1 to 9).
         """
 
-        if xPos not in getValidValueList() :
+        if xPos not in getValidValueList():
             raise InvalidPosition("xPos", xPos)
-        if yPos not in getValidValueList() :
+        if yPos not in getValidValueList():
             raise InvalidPosition("yPos", yPos)
 
         self.xPos = xPos
@@ -49,7 +49,8 @@ class Cell:
         """
         Sets the value of the cell to a given value.
         The setting is performed only if the previous value is None and the domain includes the value.
-        It also sets the domain to only contain the given value.
+        It sets the domain to only contain the given value.
+        It also removes the value from other cells domains if there's an arc between this cell and the other one.
         :param value: the value to set.
         """
         if value not in getValidValueList():
@@ -73,7 +74,7 @@ class Cell:
         """
         Fills automatically the cell if the domain contains only one value.
         """
-        if self.value is None and len(self.domain) == 1 :
+        if self.value is None and len(self.domain) == 1:
             self.SetValue(self.domain[0])
             return True
         else:
@@ -85,3 +86,6 @@ class Cell:
         :param cells: the list of cells that are in constraints alongside with this cell.
         """
         self.cellsInArcs = cells
+
+    def GetUnassignedVariablesConstraints(self):
+        return sum(1 for c in self.cellsInArcs if c.value is None)

@@ -1,4 +1,5 @@
 from grid import *
+import copy
 
 easySequence = "041600305" \
            "000007002" \
@@ -20,13 +21,10 @@ difficultSequence = "300090100" \
            "000600018" \
            "008700000"
 
+# values = stringToIntList(easySequence)
 values = stringToIntList(difficultSequence)
 
 g = Grid()
 g.SetInitialValues(values)
-
-print(g)
-
-g.AutoFill()
-
+print("filled: " + str(g.AutoFill()))
 print(g)

@@ -5,6 +5,7 @@ def getValidValueList():
     """
     return [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
+
 def stringToIntList(str):
 
     output = []
@@ -13,6 +14,7 @@ def stringToIntList(str):
         output.append(int(c))
 
     return output
+
 
 class InvalidPosition(Exception):
     """
@@ -35,6 +37,8 @@ class InvalidPosition(Exception):
         output += getValidValueList()
         output += "."
         return output
+
+
 class InvalidCellValue(Exception):
     """
     Exception to be called if the value of the cell is invalid.
