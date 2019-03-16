@@ -17,7 +17,7 @@ class Cell:
     yPos = None
     value = None
     domain = None
-    cellsInArcs = None
+    arcs = None
 
     def __init__(self, xPos, yPos):
         """
@@ -34,7 +34,7 @@ class Cell:
         self.xPos = xPos
         self.yPos = yPos
         self.domain = getValidValueList()
-        self.cellsInArcs = []
+        self.arcs = []
 
     def __str__(self):
         """
@@ -56,10 +56,10 @@ class Cell:
         if value not in getValidValueList():
             raise InvalidCellValue(value)
 
-        if self.value is None and value in self.domain :
+        if self.value is None and value in self.domain:
             self.value = value
             self.domain = [value]
-            for cell in self.cellsInArcs:
+            for cell in self.arcs:
                 cell.RemoveFromDomain(value)
 
     def RemoveFromDomain(self, value):
@@ -80,12 +80,37 @@ class Cell:
         else:
             return False
 
-    def SetCellsInArcs(self, cells):
+    def SetArcs(self, cells):
         """
-        Sets the cellsInArcs variable to the given list.
+        Sets the arcs variable to the given list.
         :param cells: the list of cells that are in constraints alongside with this cell.
         """
-        self.cellsInArcs = cells
+        self.arcs = cells
 
     def GetUnassignedVariablesConstraints(self):
-        return sum(1 for c in self.cellsInArcs if c.value is None)
+        """
+        Unassigned variables constraints.
+        :return: the amount of constraints in which this cell and an unassigned cell are involved.
+        """
+        return sum(1 for c in self.arcs if c.value is None)
+
+    def LCV(self):
+        """
+        Least constraining values
+        :return: the ordered possible values based from the least constraining to the most constraining.
+        """
+        counts = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0}
+
+        for i in self.domain:
+            c = 0
+            for cell in self.arcs:
+                if i in cell.domain:
+                    c += 1
+            counts[i] = c
+
+        output = []
+        for val in sorted(counts.items(), key=lambda kv: kv[1]):
+            if val[1] > 0:
+                output.append(val[0])
+
+        return output

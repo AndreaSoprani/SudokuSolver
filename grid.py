@@ -25,7 +25,7 @@ class Grid:
                 self.cells.append(Cell(i, j))
 
         for c in self.cells:
-            c.cellsInArcs = self.ComputeCellsInArcs(c.xPos, c.yPos)
+            c.arcs = self.ComputeArcs(c.xPos, c.yPos)
 
     def __str__(self):
         """
@@ -55,14 +55,13 @@ class Grid:
 
     # INITIAL SETTING
 
-    def ComputeCellsInArcs(self, xPos, yPos):
+    def ComputeArcs(self, xPos, yPos):
         """
         Computes all the cells that are involved in a constraint with the cell at the given coordinates.
         :param xPos: x coordinate of the given cell.
         :param yPos: y coordinate of the given cell.
         :return: a list of all the cells involved in constraints with the given cell.
         """
-
 
         output = []
 
@@ -76,7 +75,7 @@ class Grid:
             if c.yPos == yPos and c.xPos != xPos:
                 output.append(c)
 
-            #find cells in 3x3 grid
+            # find cells in 3x3 grid
             if ((c.xPos - 1) // 3 == (xPos - 1) // 3 and (c.yPos - 1) // 3 == (yPos - 1) // 3) \
                     and (c.xPos != xPos or c.yPos != yPos) \
                     and c not in output:
@@ -92,17 +91,19 @@ class Grid:
 
         for i in range(0, len(values)):
             if values[i] in getValidValueList():
-                self.cells[i].SetValue(values[i])
+                cell = self.cells[i]
+                cell.SetValue(values[i])
 
     # UTILITY
 
-    def CountFilledCells(self):
-        """
-        Counts the amount of cells filled in the grid.
-        :return: The number of cells filled with a value.
-        """
+    def getUnassigned(self):
+        output = []
 
-        return sum(c.value is not None for c in self.cells)
+        for cell in self.cells:
+            if cell.value is None:
+                output.append(cell)
+
+        return output
 
     def DeadEnd(self):
         """
@@ -110,7 +111,7 @@ class Grid:
         :return: true if a cell has a empty domain, false otherwise.
         """
 
-        return any(len(c.domain) == 0 for c in self.cells)
+        return any(len(c.domain) == 0 for c in self.getUnassigned())
 
     def MRV(self):
         """
@@ -119,9 +120,9 @@ class Grid:
         :return: the cell with the smallest domain.
         """
 
-        cell = next(c for c in self.cells if c.value is None)
+        cell = next(c for c in self.getUnassigned())
 
-        for c in self.cells:
+        for c in self.getUnassigned():
             if 1 < len(c.domain) < len(cell.domain):
                 cell = c
 
@@ -132,11 +133,10 @@ class Grid:
         Finds the cell which is involved in the highest number of constraints on other empty cells.
         :return: the selected cell.
         """
-        cell = next(c for c in self.cells if c.value is None)
+        cell = next(c for c in self.getUnassigned())
 
-        for c in self.cells:
-            if c.GetUnassignedVariablesConstraints() > cell.GetUnassignedVariablesConstraints()\
-                    and c.value is None:
+        for c in self.getUnassigned():
+            if c.GetUnassignedVariablesConstraints() > cell.GetUnassignedVariablesConstraints():
                 cell = c
 
         return cell
@@ -153,13 +153,43 @@ class Grid:
         while True:
             fill = 0
 
-            for cell in self.cells:
+            for cell in self.getUnassigned():
                 if cell.AutoFill():
                     fill += 1
-
+                    print("x: " + str(cell.xPos) + ", y: " + str(cell.yPos) + ", val = " + str(cell))
             if fill == 0:
                 break
 
             totalfilled += fill
 
         return totalfilled
+
+    def Backtracking(self):
+
+        if len(self.getUnassigned()) == 0:
+            return True
+
+        deg = self.Degree()
+        index = self.cells.index(deg)
+        print("x: " + str(deg.xPos) + ", y: " + str(deg.yPos))
+        lcv = deg.LCV()
+        backup = copy.deepcopy(self)
+
+        while len(lcv) > 0:
+            print("x: " + str(deg.xPos) + ", y: " + str(deg.yPos) + ", lcv: " + str(lcv))
+            print(deg.value)
+            deg.SetValue(lcv.pop(0))
+            print(deg.value)
+            self.AutoFill()
+            if self.DeadEnd():
+                print("deadend")
+                self = copy.deepcopy(backup)
+                deg = self.cells[index]
+            elif self.Backtracking() is False:
+                print("backtrack false")
+                self = copy.deepcopy(backup)
+                deg = self.cells[index]
+            else:
+                return True
+        print("false")
+        return False

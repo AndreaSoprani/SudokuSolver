@@ -23,19 +23,15 @@ difficultSequence = "300090100" \
            "000600018" \
            "008700000"
 
-values = stringToIntList(easySequence)
-#values = stringToIntList(difficultSequence)
+# values = stringToIntList(easySequence)
+values = stringToIntList(difficultSequence)
 
 g = Grid()
 g.SetInitialValues(values)
-h = copy.deepcopy(g)
+print(g)
 
 g.AutoFill()
+g.Backtracking()
 print(g)
-print(h)
-
-g = copy.deepcopy(h)
-print(g)
-print(len(g.unassignedCells))
-
+print(g.cells[2].domain)
 
