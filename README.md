@@ -1,5 +1,5 @@
 # SudokuCSP
-##### by Andrea Soprani
+###### by Andrea Soprani
 
 This solver uses CSP (Constraint Satisfaction Problem) algorithms to solve sudokus.<br/>
 
@@ -11,3 +11,9 @@ Node and Arc consistency are checked when setting a value in a cell:
 + A value can be set only if the value is in the domain (node-consistency).
 + When a value is set in a cell, the value is removed from the domain of the cells in the same row, column or sub-grid 
 (arc-consistency).
+
+The algorithm solves the sudoku through backtracking (dfs).
+Variable selection can be done with 2 polcies:
+ * MRV (Minimum Remaining Values)
+ * Degree
+Value selection is done with the LCV (Least Constraining Value) policy.
