@@ -1,6 +1,5 @@
 from cell import *
 from utility import *
-import copy
 
 
 class Grid:
@@ -17,15 +16,15 @@ class Grid:
 
     def __init__(self):
         """
-        Initializes a 9x9 grid of empty cells.
+        Initialize a 9x9 grid of empty cells.
         """
         self.cells = []
-        for j in getValidValueList():
-            for i in getValidValueList():
+        for j in get_valid_value_list():
+            for i in get_valid_value_list():
                 self.cells.append(Cell(i, j))
 
         for c in self.cells:
-            c.arcs = self.ComputeArcs(c.xPos, c.yPos)
+            c.arcs = self.compute_arcs(c.xPos, c.yPos)
 
     def __str__(self):
         """
@@ -55,11 +54,11 @@ class Grid:
 
     # INITIAL SETTING
 
-    def ComputeArcs(self, xPos, yPos):
+    def compute_arcs(self, x_pos, y_pos):
         """
-        Computes all the cells that are involved in a constraint with the cell at the given coordinates.
-        :param xPos: x coordinate of the given cell.
-        :param yPos: y coordinate of the given cell.
+        Find all the cells that are involved in a constraint with the cell at the given coordinates.
+        :param x_pos: x coordinate of the given cell.
+        :param y_pos: y coordinate of the given cell.
         :return: a list of all the cells involved in constraints with the given cell.
         """
 
@@ -68,35 +67,39 @@ class Grid:
         for c in self.cells:
 
             # find cells in row
-            if c.xPos == xPos and c.yPos != yPos:
+            if c.xPos == x_pos and c.yPos != y_pos:
                 output.append(c)
 
             # find cells in columns
-            if c.yPos == yPos and c.xPos != xPos:
+            if c.yPos == y_pos and c.xPos != x_pos:
                 output.append(c)
 
             # find cells in 3x3 grid
-            if ((c.xPos - 1) // 3 == (xPos - 1) // 3 and (c.yPos - 1) // 3 == (yPos - 1) // 3) \
-                    and (c.xPos != xPos or c.yPos != yPos) \
+            if ((c.xPos - 1) // 3 == (x_pos - 1) // 3 and (c.yPos - 1) // 3 == (y_pos - 1) // 3) \
+                    and (c.xPos != x_pos or c.yPos != y_pos) \
                     and c not in output:
                 output.append(c)
 
         return output
 
-    def SetInitialValues(self, values):
+    def set_initial_values(self, values):
         """
-        Sets the initial position of the grid to one given by the values array-
+        Set the initial position of the grid to one given by the values array.
         :param values: array of values for the grid, 0 if the cell is empty.
         """
 
         for i in range(0, len(values)):
-            if values[i] in getValidValueList():
+            if values[i] in get_valid_value_list():
                 cell = self.cells[i]
-                cell.SetValue(values[i])
+                cell.set_value(values[i])
 
     # UTILITY
 
-    def getUnassigned(self):
+    def get_unassigned(self):
+        """
+        Retrieve a list of all the unassigned cells.
+        :return: a list of unassigned cells.
+        """
         output = []
 
         for cell in self.cells:
@@ -105,22 +108,22 @@ class Grid:
 
         return output
 
-    def DeadEnd(self):
+    def dead_end(self):
         """
-        Returns true if there's a cell that doesn't admit any value, false otherwise.
+        Find out if there's a dead end.
         :return: true if a cell has a empty domain, false otherwise.
         """
 
-        return any(len(c.domain) == 0 for c in self.getUnassigned())
+        return any(len(c.domain) == 0 for c in self.get_unassigned())
 
-    def MRV(self):
+    def mrv(self):
         """
         Minimum Remaining Values
-        Finds the cell with the smallest domain.
+        Find the cell with the smallest domain.
         :return: the cell with the smallest domain.
         """
 
-        unassigned = self.getUnassigned()
+        unassigned = self.get_unassigned()
 
         cell = unassigned[0]
 
@@ -130,40 +133,40 @@ class Grid:
 
         return cell
 
-    def Degree(self):
+    def degree(self):
         """
-        Finds the cell which is involved in the highest number of constraints on other empty cells.
+        Find the cell which is involved in the highest number of constraints on other empty cells.
         :return: the selected cell.
         """
 
-        unassigned = self.getUnassigned()
+        unassigned = self.get_unassigned()
 
         cell = unassigned[0]
 
         for c in unassigned:
-            if c.GetUnassignedVariablesConstraints() > cell.GetUnassignedVariablesConstraints():
+            if c.get_unassigned_variables_constraints() > cell.get_unassigned_variables_constraints():
                 cell = c
 
         return cell
 
     # SOLVE
 
-    def AutoFill(self):
+    def auto_fill(self):
         """
-        Used to auto-fill the grid based just on the arcs (immediate constraints).
+        Auto-fill the grid based just on the arcs (immediate constraints).
         :return: the number of cells filled.
         """
-        totalfilled = 0
+        total_filled = 0
 
         while True:
             fill = 0
 
-            for cell in self.getUnassigned():
-                if cell.AutoFill():
+            for cell in self.get_unassigned():
+                if cell.auto_fill():
                     fill += 1
             if fill == 0:
                 break
 
-            totalfilled += fill
+            total_filled += fill
 
-        return totalfilled
+        return total_filled

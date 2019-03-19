@@ -1,4 +1,4 @@
-def getValidValueList():
+def get_valid_value_list():
     """
     Used to get a list of the valid values both for cell value and for positions.
     :return: a list with values from 1 to 9
@@ -6,11 +6,11 @@ def getValidValueList():
     return [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 
-def stringToIntList(str):
+def string_to_int_list(input_string):
 
     output = []
 
-    for c in str:
+    for c in input_string:
         output.append(int(c))
 
     return output
@@ -34,7 +34,7 @@ class InvalidPosition(Exception):
         output += str(self.value)
         output += " is not a valid position.\n"
         output += "Insert a value from "
-        output += getValidValueList()
+        output += get_valid_value_list()
         output += "."
         return output
 
@@ -53,7 +53,7 @@ class InvalidCellValue(Exception):
         output += str(self.value)
         output += " is not a valid value.\n"
         output += "Insert a value from "
-        output += getValidValueList()
+        output += get_valid_value_list()
         output += "."
         return output
 
@@ -94,6 +94,7 @@ class CellOccupied(Exception):
         output += "Old value: " + str(self.cell.value) + "."
         output += "New value: " + str(self.value) + "."
         return output
+
 
 class VariableSelectionModeUnsupported(Exception):
     """

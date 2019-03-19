@@ -19,21 +19,21 @@ class Cell:
     domain = None
     arcs = None
 
-    def __init__(self, xPos, yPos):
+    def __init__(self, x_pos, y_pos):
         """
-        Initializes an empty cell in a given position.
-        :param xPos: the x position of the cell (from 1 to 9).
-        :param yPos: the y position of the cell (from 1 to 9).
+        Initialize an empty cell in a given position.
+        :param x_pos: the x position of the cell (from 1 to 9).
+        :param y_pos: the y position of the cell (from 1 to 9).
         """
 
-        if xPos not in getValidValueList():
-            raise InvalidPosition("xPos", xPos)
-        if yPos not in getValidValueList():
-            raise InvalidPosition("yPos", yPos)
+        if x_pos not in get_valid_value_list():
+            raise InvalidPosition("xPos", x_pos)
+        if y_pos not in get_valid_value_list():
+            raise InvalidPosition("yPos", y_pos)
 
-        self.xPos = xPos
-        self.yPos = yPos
-        self.domain = getValidValueList()
+        self.xPos = x_pos
+        self.yPos = y_pos
+        self.domain = get_valid_value_list()
         self.arcs = []
 
     def __str__(self):
@@ -45,15 +45,15 @@ class Cell:
             return " "
         return str(self.value)
 
-    def SetValue(self, value):
+    def set_value(self, value):
         """
-        Sets the value of the cell to a given value.
+        Set the value of the cell to a given value.
         The setting is performed only if the previous value is None and the domain includes the value.
         It sets the domain to only contain the given value.
         It also removes the value from other cells domains if there's an arc between this cell and the other one.
         :param value: the value to set.
         """
-        if value not in getValidValueList():
+        if value not in get_valid_value_list():
             raise InvalidCellValue(value)
 
         if value not in self.domain:
@@ -63,44 +63,43 @@ class Cell:
             raise CellOccupied(self, value)
 
         self.value = value
-        #print("x: " + str(self.xPos) + ", y: " + str(self.yPos) + ", val = " + str(value))
         self.domain = [value]
         for cell in self.arcs:
-            cell.RemoveFromDomain(value)
+            cell.remove_from_domain(value)
 
-    def RemoveFromDomain(self, value):
+    def remove_from_domain(self, value):
         """
-        Removes a value from the domain.
+        Remove a value from the domain.
         :param value: the value to remove.
         """
         if value in self.domain:
             self.domain.remove(value)
 
-    def AutoFill(self):
+    def auto_fill(self):
         """
-        Fills automatically the cell if the domain contains only one value.
+        Fill automatically the cell if the domain contains only one value.
         """
         if self.value is None and len(self.domain) == 1:
-            self.SetValue(self.domain[0])
+            self.set_value(self.domain[0])
             return True
         else:
             return False
 
-    def SetArcs(self, cells):
+    def set_arcs(self, cells):
         """
-        Sets the arcs variable to the given list.
+        Set the arcs variable to the given list.
         :param cells: the list of cells that are in constraints alongside with this cell.
         """
         self.arcs = cells
 
-    def GetUnassignedVariablesConstraints(self):
+    def get_unassigned_variables_constraints(self):
         """
         Unassigned variables constraints.
         :return: the amount of constraints in which this cell and an unassigned cell are involved.
         """
         return sum(1 for c in self.arcs if c.value is None)
 
-    def LCV(self):
+    def lcv(self):
         """
         Least constraining values
         :return: the ordered possible values based from the least constraining to the most constraining.
