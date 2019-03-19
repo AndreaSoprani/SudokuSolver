@@ -56,11 +56,17 @@ class Cell:
         if value not in getValidValueList():
             raise InvalidCellValue(value)
 
-        if self.value is None and value in self.domain:
-            self.value = value
-            self.domain = [value]
-            for cell in self.arcs:
-                cell.RemoveFromDomain(value)
+        if value not in self.domain:
+            raise ValueNotInDomain(self, value)
+
+        if self.value is not None:
+            raise CellOccupied(self, value)
+
+        self.value = value
+        #print("x: " + str(self.xPos) + ", y: " + str(self.yPos) + ", val = " + str(value))
+        self.domain = [value]
+        for cell in self.arcs:
+            cell.RemoveFromDomain(value)
 
     def RemoveFromDomain(self, value):
         """

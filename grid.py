@@ -120,9 +120,11 @@ class Grid:
         :return: the cell with the smallest domain.
         """
 
-        cell = next(c for c in self.getUnassigned())
+        unassigned = self.getUnassigned()
 
-        for c in self.getUnassigned():
+        cell = unassigned[0]
+
+        for c in unassigned:
             if 1 < len(c.domain) < len(cell.domain):
                 cell = c
 
@@ -133,9 +135,12 @@ class Grid:
         Finds the cell which is involved in the highest number of constraints on other empty cells.
         :return: the selected cell.
         """
-        cell = next(c for c in self.getUnassigned())
 
-        for c in self.getUnassigned():
+        unassigned = self.getUnassigned()
+
+        cell = unassigned[0]
+
+        for c in unassigned:
             if c.GetUnassignedVariablesConstraints() > cell.GetUnassignedVariablesConstraints():
                 cell = c
 
@@ -156,40 +161,9 @@ class Grid:
             for cell in self.getUnassigned():
                 if cell.AutoFill():
                     fill += 1
-                    print("x: " + str(cell.xPos) + ", y: " + str(cell.yPos) + ", val = " + str(cell))
             if fill == 0:
                 break
 
             totalfilled += fill
 
         return totalfilled
-
-    def Backtracking(self):
-
-        if len(self.getUnassigned()) == 0:
-            return True
-
-        deg = self.Degree()
-        index = self.cells.index(deg)
-        print("x: " + str(deg.xPos) + ", y: " + str(deg.yPos))
-        lcv = deg.LCV()
-        backup = copy.deepcopy(self)
-
-        while len(lcv) > 0:
-            print("x: " + str(deg.xPos) + ", y: " + str(deg.yPos) + ", lcv: " + str(lcv))
-            print(deg.value)
-            deg.SetValue(lcv.pop(0))
-            print(deg.value)
-            self.AutoFill()
-            if self.DeadEnd():
-                print("deadend")
-                self = copy.deepcopy(backup)
-                deg = self.cells[index]
-            elif self.Backtracking() is False:
-                print("backtrack false")
-                self = copy.deepcopy(backup)
-                deg = self.cells[index]
-            else:
-                return True
-        print("false")
-        return False

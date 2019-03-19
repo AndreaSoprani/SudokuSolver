@@ -56,3 +56,53 @@ class InvalidCellValue(Exception):
         output += getValidValueList()
         output += "."
         return output
+
+
+class ValueNotInDomain(Exception):
+    """
+    Exception to be called if a cell is being filled with a value which is not in the domain
+    """
+    cell = None
+    value = None
+
+    def __init__(self, cell, value):
+        self.cell = cell
+        self.value = value
+
+    def __str__(self):
+        output = "New value not in domain.\n"
+        output += "Cell position: (" + str(self.cell.xPos) + ", " + str(self.cell.yPos) + ").\n"
+        output += "Domain: " + str(self.cell.domain) + "."
+        output += "New value: " + str(self.value) + "."
+        return output
+
+
+class CellOccupied(Exception):
+    """
+    Exception to be called if a filled cell is being filled again
+    """
+    cell = None
+    value = None
+
+    def __init__(self, cell, value):
+        self.cell = cell
+        self.value = value
+
+    def __str__(self):
+        output = "Cell already occupied.\n"
+        output += "Cell position: (" + str(self.cell.xPos) + ", " + str(self.cell.yPos) + ").\n"
+        output += "Old value: " + str(self.cell.value) + "."
+        output += "New value: " + str(self.value) + "."
+        return output
+
+class VariableSelectionModeUnsupported(Exception):
+    """
+    Exception called when the variable selection mode is unsupported
+    """
+    requestedMode = None
+
+    def __init__(self, mode):
+        self.requestedMode = mode
+
+    def __str__(self):
+        return self.requestedMode + " is not a supported variable selection mode"

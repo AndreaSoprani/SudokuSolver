@@ -28,14 +28,5 @@ values = stringToIntList(easySequence)
 
 g = Grid()
 g.SetInitialValues(values)
-h = copy.deepcopy(g)
-
-g.AutoFill()
-print(g)
-print(h)
-
-g = copy.deepcopy(h)
-print(g)
-print(len(g.unassignedCells))
 
 
