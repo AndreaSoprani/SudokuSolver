@@ -1,6 +1,7 @@
 from grid import *
 import copy
 import time
+import gui
 
 
 def solve(variable_selection_mode):
@@ -83,16 +84,18 @@ allZeros = "000000000" \
            "000000000" \
            "000000000"
 
-start_time = time.time()
 
-values = string_to_int_list(evilSequence)
+values = string_to_int_list(difficultSequence)
 
 grid = Grid()
 grid.set_initial_values(values)
 
-print(grid)
+initial_grid = copy.deepcopy(grid)
+
+start_time = time.time()
 
 solve("mrv")
 
-print(grid)
 print("--- Execution time: %s seconds ---" % (time.time() - start_time))
+
+gui.show_sudokus(initial_grid, grid)
