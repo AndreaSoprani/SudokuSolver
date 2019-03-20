@@ -1,10 +1,8 @@
 from grid import *
 import copy
-import time
-import gui
 
 
-def solve(variable_selection_mode):
+def dfs(variable_selection_mode):
     """
     Solve the sudoku through a depth-first-search.
     :param variable_selection_mode: "mrv" or "degree"
@@ -35,7 +33,7 @@ def solve(variable_selection_mode):
         if grid.dead_end():
             grid = copy.deepcopy(backup)
             cell = grid.cells[index]
-        elif solve(variable_selection_mode) is False:
+        elif dfs(variable_selection_mode) is False:
             grid = copy.deepcopy(backup)
             cell = grid.cells[index]
         else:
@@ -44,58 +42,15 @@ def solve(variable_selection_mode):
     return False
 
 
-easySequence = "041600305" \
-               "000007002" \
-               "005900000" \
-               "700005480" \
-               "309008020" \
-               "000760009" \
-               "004300091" \
-               "067500004" \
-               "090041200"
+def solve(values_string):
 
-difficultSequence = "300090100" \
-                    "010034000" \
-                    "002060530" \
-                    "800200305" \
-                    "070050000" \
-                    "009008600" \
-                    "090005070" \
-                    "000600018" \
-                    "008700000"
+    global grid
 
-evilSequence = "006003004" \
-               "010070050" \
-               "700600200" \
-               "500800300" \
-               "090060080" \
-               "007009005" \
-               "002004006" \
-               "070020010" \
-               "600300800"
+    grid = Grid()
+    grid.set_initial_values(string_to_int_list(values_string))
 
-allZeros = "000000000" \
-           "000000000" \
-           "000000000" \
-           "000000000" \
-           "000000000" \
-           "000000000" \
-           "000000000" \
-           "000000000" \
-           "000000000"
+    if dfs("mrv") is False:
+        print("Error. Sudoku unsolved")
+        print(grid)
 
-
-values = string_to_int_list(difficultSequence)
-
-grid = Grid()
-grid.set_initial_values(values)
-
-initial_grid = copy.deepcopy(grid)
-
-start_time = time.time()
-
-solve("mrv")
-
-print("--- Execution time: %s seconds ---" % (time.time() - start_time))
-
-gui.show_sudokus(initial_grid, grid)
+    return grid

@@ -17,3 +17,4 @@ Variable selection can be done with 2 polcies:
  * MRV (Minimum Remaining Values)
  * Degree
 Value selection is done with the LCV (Least Constraining Value) policy.
+
