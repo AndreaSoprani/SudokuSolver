@@ -46,11 +46,13 @@ if __name__ == "__main__":
         quiz = Grid()
         quiz.set_initial_values(string_to_int_list(line))
 
-        output.write("{}\n\n".format(str(quiz)))
-        output.write("{}\n\n".format(str(solved)))
+        output.write("{}\n".format(str(quiz)))
+        output.write("{}\n".format(str(solved)))
 
     print("{} sudokus solved in {}".format(counter, total_time))
+    output.write("{} sudokus solved in {}\n".format(counter, total_time))
 
     if counter != 0:
         average = total_time / counter
         print("average time: {}".format(average))
+        output.write("average time: {}\n".format(average))

@@ -13,8 +13,21 @@ Node and Arc consistency are checked when setting a value in a cell:
 (arc-consistency).
 
 The algorithm solves the sudoku through backtracking (dfs).
-Variable selection can be done with 2 polcies:
- * MRV (Minimum Remaining Values)
+Variable selection can be done with 2 policies:
+ * MRV (Minimum Remaining Values) (default)
  * Degree
+ 
 Value selection is done with the LCV (Least Constraining Value) policy.
 
+## Instructions
+
+Sudokus to be solved are stored in "sudokus.txt".
+Each sudoku must be stored in a line of 81 characters in the range [0, 9] (0 for empty cells, 1-9 for filled ones).
+No blank lines should be included in this file.
+This file already contains 10 difficult sudokus.
+
+Solved sudokus will be stored in "solutions.txt".
+The file will show solution time, unsolved grid and solved grid for each sudoku in "sudokus.txt" and it will be overwritten 
+at each execution of "main.py".
+
+Execute "main.py" in order to solve all the sudokus in "sudokus.txt".
