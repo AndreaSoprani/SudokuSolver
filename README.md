@@ -1,4 +1,4 @@
-# SudokuCSP
+# Sudoku Solver
 ###### by Andrea Soprani
 
 This solver uses CSP (Constraint Satisfaction Problem) algorithms to solve sudokus.<br/>
